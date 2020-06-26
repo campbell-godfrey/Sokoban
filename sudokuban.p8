@@ -229,15 +229,16 @@ function check_end_condition()
 			targets__m=mget(gm.level.targets[j].x,gm.level.targets[j].y)
 			crates_num=fget(crates__m)
 			targets_num=fget(targets__m)
-			if (crates_num-2)==(targets_num-128)then
-				crates__m=0
-				targets__m=0
-				crates_num=0
-				targets_num=0
+			print(crates_num)
+			--if (crates_num-128)==(targets_num-128)then
+				--crates__m=0
+				--targets__m=0
+				--crates_num=0
+				--targets_num=0
 				if((gm.level.crates[i].x==gm.level.targets[j].x)and(gm.level.crates[i].y==gm.level.targets[j].y))then
 					cnt=cnt+1
 				end
-			end
+			--end
 		end
 	end
 	if(level_var==1 and cnt==4)then
