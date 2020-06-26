@@ -1,6 +1,10 @@
 pico-8 cartridge // http://www.pico-8.com
 version 27
 __lua__
+--main setup
+--level
+level_var=0
+
 --crates setup
 crt_col=9 
 plr_spr=1 
@@ -33,7 +37,7 @@ end_screen.col = 7
 --◆levels config
 lvls = {}
 
-lvls[1] = {x=0,y=0,soffx=32,soffy=32,widx=9,widy=9,msg="sudoku warm-up",msg_x=45,msg_y=60}
+lvls[1] = {x=0,y=0,soffx=32,soffy=32,widx=9,widy=9,msg="sudoku warm-up",msg_x=45,msg_y=60,level_crates=4}
 lvls[2] = {x=9,y=0,soffx=32,soffy=32,widx=9,widy=9,msg="sorry there are no 3x3 boxes",msg_x=25,msg_y=60}
 lvls[3] = {x=18,y=0,soffx=32,soffy=32,widx=9,widy=9,msg="",msg_x=45,msg_y=60}
 lvls[4] = {x=24,y=0,soffx=32,soffy=32,widx=8,widy=8,msg="",msg_x=40,msg_y=60}
@@ -190,10 +194,7 @@ function draw_crates(o)
 	local m_y=to_map_val(o.y,"y")
 	local cell=get_map_pos(o.x,o.y)
 	mset(m_x,m_y,o.org_spr)
-	--draw a rect on crate if on target
-	--if(fget(o.last_tile)==128)then
-		--rect(o.x-(gm.level.x*8),o.y-(gm.level.y*8),(o.x+7)-(gm.level.x*8),(o.y+7)-(gm.level.y*8),crt_col)
-	--end
+	
 end
 
 --general purpose
@@ -223,19 +224,25 @@ function check_end_condition()
 	local cnt = 0
 	local result = false
 	for i=1,#gm.level.crates do
-		for x=1,#gm.level.targets do
+		for j=1,#gm.level.targets do
 			crates__m=mget(gm.level.crates[i].x,gm.level.crates[i].y)
-			targets__m=mget(gm.level.targets[x].x,gm.level.targets[x].y)
+			targets__m=mget(gm.level.targets[j].x,gm.level.targets[j].y)
 			crates_num=fget(crates__m)
 			targets_num=fget(targets__m)
 			if (crates_num-2)==(targets_num-128)then
-				if((gm.level.crates[i].x==gm.level.targets[x].x)and(gm.level.crates[i].y==gm.level.targets[x].y))then
+				crates__m=0
+				targets__m=0
+				crates_num=0
+				targets_num=0
+				if((gm.level.crates[i].x==gm.level.targets[j].x)and(gm.level.crates[i].y==gm.level.targets[j].y))then
 					cnt=cnt+1
 				end
 			end
 		end
 	end
-	if(cnt==#gm.level.crates)then
+	if(level_var==1 and cnt==4)then
+		result = true
+	elseif(level_var==2 and cnt==2)then
 		result = true
 	end
 	return result
@@ -327,6 +334,7 @@ end
 function trns_state_input()
 	if(btnp(4))then
 		gm.state=1
+		level_var=level_var+1
 	end
 end
 
@@ -643,7 +651,7 @@ __label__
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
 __gff__
-00000000000408102040444850600000000000000000000000000000000000000101010101010101010102060a122242464a526280fcfcfcfcfcfcfcfcfcfc0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+0000000000848890a0c0c4c8d0e00000000000000000000000000000000000000101010101010101010102060a122242464a526280fcfcfcfcfcfcfcfcfcfc0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 __map__
 2523242627282921222523202027202020202020202020202020202020202020150000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
